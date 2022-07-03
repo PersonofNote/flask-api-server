@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 """
-Copyright (c) 2019 - present applicationSeed.us
+Copyright (c) 2019 - present AppSeed.us
 """
 
 import json
@@ -15,8 +15,8 @@ application = Flask(__name__)
 
 application.config.from_object('api.config.BaseConfig')
 
-db.init_application(application)
-rest_api.init_application(application)
+db.init_app(application)
+rest_api.init_app(application)
 # TODO: Update this to the frontend
 CORS(application, resources={r"*": {"origins": "*"}})
 application.config['CORS_HEADERS'] = 'Content-Type'
@@ -42,5 +42,5 @@ def after_request(response):
             response_data = {"success": False,
                              "msg": list(response_data["errors"].items())[0][1]}
             response.set_data(json.dumps(response_data))
-        response.headers.add('Content-Type', 'applicationlication/json')
+        response.headers.add('Content-Type', 'application/json')
     return response
