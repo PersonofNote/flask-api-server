@@ -1,0 +1,5 @@
+(dev).tmpl
+.DS_Store
+.env
+__pycache__
+env/
