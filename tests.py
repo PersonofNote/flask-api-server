@@ -1,20 +1,20 @@
 # -*- encoding: utf-8 -*-
 
 """
-Copyright (c) 2019 - present AppSeed.us
+Copyright (c) 2019 - present applicationSeed.us
 """
 
 import pytest
 import json
 
-from api import app
+from api import application
 
 """
    Sample test data
 """
 
-DUMMY_USERNAME = "apple"
-DUMMY_EMAIL = "apple@apple.com"
+DUMMY_USERNAME = "applicationle"
+DUMMY_EMAIL = "applicationle@applicationle.com"
 DUMMY_PASS = "newpassword"
 
 
@@ -24,7 +24,7 @@ DUMMY_MOOD_NOTES = 'lorem ipsum'
 
 @pytest.fixture
 def client():
-    with app.test_client() as client:
+    with application.test_client() as client:
         yield client
 
 def test_user_signup(client):
@@ -40,7 +40,7 @@ def test_user_signup(client):
                 "password": DUMMY_PASS
             }
         ),
-        content_type="application/json")
+        content_type="applicationlication/json")
 
     data = json.loads(response.data.decode())
     assert response.status_code == 200
@@ -60,7 +60,7 @@ def test_user_signup_invalid_data(client):
                 "password": DUMMY_PASS
             }
         ),
-        content_type="application/json")
+        content_type="applicationlication/json")
 
     data = json.loads(response.data.decode())
     assert response.status_code == 400
@@ -79,7 +79,7 @@ def test_user_login_correct(client):
                 "password": DUMMY_PASS
             }
         ),
-        content_type="application/json")
+        content_type="applicationlication/json")
 
     data = json.loads(response.data.decode())
     assert response.status_code == 200
@@ -98,7 +98,7 @@ def test_user_login_error(client):
                 "password": DUMMY_EMAIL
             }
         ),
-        content_type="application/json")
+        content_type="applicationlication/json")
 
     data = json.loads(response.data.decode())
     assert response.status_code == 400
@@ -117,7 +117,7 @@ def test_valid_mood_insert(client):
                 'notes': DUMMY_MOOD_NOTES
             }
         ),
-        content_type="application/json")
+        content_type="applicationlication/json")
 
     data = json.loads(response.data.decode())
     assert response.status_code == 400

@@ -1,16 +1,16 @@
 # -*- encoding: utf-8 -*-
 
 """
-Copyright (c) 2019 - present AppSeed.us
+Copyright (c) 2019 - present applicationSeed.us
 """
 
-from api import app, db
+from api import application, db
 
-@app.shell_context_processor
+@application.shell_context_processor
 def make_shell_context():
-    return {"app": app,
+    return {"application": application,
             "db": db
             }
 
 if __name__ == '__main__':
-    app.run(debug=True, host="0.0.0.0")
+    application.run(debug=True, host="0.0.0.0")
