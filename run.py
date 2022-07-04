@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 """
-Copyright (c) 2019 - present applicationSeed.us
+Copyright (c) 2019 - present appSeed.us
 """
 
 from api import application, db
