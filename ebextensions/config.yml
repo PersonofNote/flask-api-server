@@ -1,0 +1,7 @@
+option_settings:
+ aws:elasticbeanstalk:application:environment:
+   LC_ALL: en_US.utf8
+   FLASK_APP: api
+   FLASK_ENV: production
+  aws:elasticbeanstalk:container:python:
+    WSGIPath: api:application
