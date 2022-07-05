@@ -195,9 +195,20 @@ Run tests using `pytest tests.py`
 
 ## AWS Deployment
 
-If you encounter the error "ValueError - ZIP does not support timestamps before 1980," run the command 
+### Error debugging
+
+#### "ValueError - ZIP does not support timestamps before 1980," run the command 
 `find . -type f -exec touch -t 201601011200 '{}' \;` 
-and sub in whatever timestampe you want. This updates all the files to a new timestamp and ensures that none of them have no timestamp or an excessively old timestamp.
+and sub in whatever timestampe you want. This updates all the files to a new timestamp and ensures that none of them have no timestamp or an excessively old timestamp. (This is more likely to happen wiht the front end, however, and is a known bug with a javascript package)
+
+OR 
+
+Make sure that you have a git repo in each project. I made the mistake of trying to package them together and it took a while to figure out. EB is looking for a git repo and if there is none, it will not have a timestamp. This is a somewhat confusing error.
+
+#### "No module named application"
+If you get a 502 error, check the logs with `eb logs`. EC2 expects the Flask app to be in application.py, but this project uses `__init__.py` and an app subdirectory. You can provide ec2 with the correct directory using an ebextension file 
+
+https://stackoverflow.com/questions/64000856/deploying-flask-app-on-elastic-beanstalk-no-module-named-application
 
 ---
 **[Flask API Boilerplate](https://appseed.us/boilerplate-code/flask-api-boilerplate)** - provided by AppSeed [App Generator](https://appseed.us)
