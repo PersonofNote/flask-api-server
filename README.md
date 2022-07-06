@@ -210,5 +210,9 @@ If you get a 502 error, check the logs with `eb logs`. EC2 expects the Flask app
 
 https://stackoverflow.com/questions/64000856/deploying-flask-app-on-elastic-beanstalk-no-module-named-application
 
+#### Gunicorn/Procfile help
+
+* Heroku: https://stackoverflow.com/questions/38851564/heroku-gunicorn-procfile
+
 ---
 **[Flask API Boilerplate](https://appseed.us/boilerplate-code/flask-api-boilerplate)** - provided by AppSeed [App Generator](https://appseed.us)
