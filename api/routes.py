@@ -12,8 +12,9 @@ from flask_restx import Api, Resource, fields
 
 import jwt
 
-from .models import db, Users, Moods, JWTTokenBlocklist
-from .config import BaseConfig
+import models 
+#import db, Users, Moods, JWTTokenBlocklist
+import config
 
 import json
 
@@ -80,14 +81,14 @@ def token_required(f):
             return {"success": False, "msg": "Valid JWT token is missing"}, 400
 
         try:
-            data = jwt.decode(token, BaseConfig.SECRET_KEY, algorithms=["HS256"])
-            current_user = Users.get_by_email(data["email"])
+            data = jwt.decode(token, config.BaseConfig.SECRET_KEY, algorithms=["HS256"])
+            current_user = models.Users.get_by_email(data["email"])
 
             if not current_user:
                 return {"success": False,
                         "msg": "Sorry. Wrong auth token. This user does not exist."}, 400
 
-            token_expired = db.session.query(JWTTokenBlocklist.id).filter_by(jwt_token=token).scalar()
+            token_expired = models.db.session.query(JWTTokenBlocklist.id).filter_by(jwt_token=token).scalar()
 
             if token_expired is not None:
                 return {"success": False, "msg": "Token revoked."}, 400
@@ -123,12 +124,12 @@ class Register(Resource):
         _email = req_data.get("email")
         _password = req_data.get("password")
 
-        user_exists = Users.get_by_email(_email)
+        user_exists = models.Users.get_by_email(_email)
         if user_exists:
             return {"success": False,
                     "msg": "Email already taken"}, 400
 
-        new_user = Users(username=_username, email=_email)
+        new_user = models.Users(username=_username, email=_email)
 
         new_user.set_password(_password)
         new_user.save()
@@ -143,7 +144,7 @@ class UserUtilities(Resource):
     """
     @token_required
     def get(self):
-        a = Users.query.all()
+        a = models.Users.query.all()
         user_json = [s.toJSON() for s in a]
         return {"success": True, "userList": json.dumps(user_json)}, 200
 
@@ -159,7 +160,7 @@ class UserDelete(Resource):
         req_data = request.get_json()
 
         _userid = req_data.get("id")
-        users = Users.get_by_id(_userid)
+        users = models.Users.get_by_id(_userid)
         users.delete(users)
         return {"success": True, "deletedUser": "Deleted"}, 200
 
@@ -177,7 +178,7 @@ class Login(Resource):
         _email = req_data.get("email")
         _password = req_data.get("password")
 
-        user_exists = Users.get_by_email(_email)
+        user_exists = models.Users.get_by_email(_email)
 
         if not user_exists:
             return {"success": False,
@@ -189,7 +190,7 @@ class Login(Resource):
         
 
         # create access token uwing JWT
-        token = jwt.encode({'email': _email, 'exp': datetime.utcnow() + timedelta(minutes=30)}, BaseConfig.SECRET_KEY)
+        token = jwt.encode({'email': _email, 'exp': datetime.utcnow() + timedelta(minutes=30)}, config.BaseConfig.SECRET_KEY)
 
         user_exists.set_jwt_auth_active(True)
         user_exists.save()
@@ -243,7 +244,7 @@ class LogoutUser(Resource):
 
         _jwt_token = request.headers["authorization"]
 
-        jwt_block = JWTTokenBlocklist(jwt_token=_jwt_token, created_at=datetime.now(timezone.utc))
+        jwt_block = models.JWTTokenBlocklist(jwt_token=_jwt_token, created_at=datetime.now(timezone.utc))
         jwt_block.save()
 
         self.set_jwt_auth_active(False)
@@ -258,7 +259,7 @@ class GetMoods(Resource):
     """
     def get(self, user_id):
         try:
-            m = Moods.get_all_for_user(user_id)
+            m = models.Moods.get_all_for_user(user_id)
             mood_json = [s.toJSON() for s in m]
 
             return {"success": True,
@@ -287,7 +288,7 @@ class AddMood(Resource):
         _notes = req_data.get("notes")
         _userID = req_data.get("userID")
 
-        new_mood = Moods(title=_title, value=_value, notes=_notes, user_id=_userID)
+        new_mood = models.Moods(title=_title, value=_value, notes=_notes, user_id=_userID)
         new_mood.save()
 
         # Pass the mood data back to the client to add it to the list without refreshing the page
@@ -311,7 +312,7 @@ class DeleteMood(Resource):
 
         _id = req_data.get("moodID")
 
-        mood_to_del = Moods.get_by_id(id=_id)
+        mood_to_del = models.Moods.get_by_id(id=_id)
         mood_to_del.delete(mood_to_del)
 
         # TODO: return moods back to the user... 
