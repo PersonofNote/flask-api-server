@@ -8,15 +8,15 @@ import json
 from flask import Flask
 from flask_cors import CORS
 
-from .routes import rest_api
-from .models import db
+import routes
+import models
 
 application = Flask(__name__)
 
 application.config.from_object('api.config.BaseConfig')
 
-db.init_app(application)
-rest_api.init_app(application)
+models.db.init_app(application)
+routes.rest_api.init_app(application)
 # TODO: Update this to the frontend
 CORS(application, resources={r"*": {"origins": "*"}})
 application.config['CORS_HEADERS'] = 'Content-Type'
@@ -24,7 +24,7 @@ application.config['CORS_HEADERS'] = 'Content-Type'
 # Setup database
 @application.before_first_request
 def initialize_database():
-    db.create_all()
+    models.db.create_all()
 
 """
    Custom responses
